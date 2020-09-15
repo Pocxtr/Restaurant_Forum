@@ -1,9 +1,9 @@
-const db = require('../models')
-const Restaurant = db.Restaurant
-const { create } = require('express-handlebars')
 const fs = require('fs')
+const db = require('../models')
+const restaurant = require('../models/restaurant')
+const Restaurant = db.Restaurant
 const imgur = require('imgur-node-api')
-const IMGUR_CLIENT_ID = '6a539da0d5730aa'
+const IMGUR_CLIENT_ID = 'process.env.IMGUR_CLIENT_ID'
 
 const adminController = {
     getRestaurants : (req, res) => {
