@@ -16,7 +16,7 @@ if(process.env.NODE_ENV !== 'production') {
 app.engine('hbs', handlebars({ defaultLayout: 'main', extname: 'hbs'})) //Handlebars 註冊樣板引擎
 app.set('view engine', 'hbs') //設定使用Handlebars 作為樣板引擎
 app.use(bodyParser.urlencoded({extended: true}))
-app.use(session({ secret: process.env.SESSION_SECRET, resave: false, saveUninitialized: false }))
+app.use(session({ secret: 'secret', resave: false, saveUninitialized: false }))
 app.use(passport.initialize())
 app.use(passport.session())
 app.use(flash())
