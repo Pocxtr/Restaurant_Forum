@@ -8,7 +8,7 @@ const passport = require('./config/passport')
 const methodOverride = require('method-override')
 
 const app = express()
-const port = 3000
+const port = process.env.PORT || 3000
 
 app.engine('hbs', handlebars({ defaultLayout: 'main', extname: 'hbs'})) //Handlebars 註冊樣板引擎
 app.set('view engine', 'hbs') //設定使用Handlebars 作為樣板引擎
