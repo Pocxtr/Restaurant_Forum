@@ -1,6 +1,8 @@
 const bcrypt = require('bcryptjs')
 const db = require('../models')
 const User = db.User
+const imgur = require('imgur-node-api')
+const IMGUR_CLIENT_ID = process.env.IMGUR_CLIENT_ID
 
 const userController = {
     signUpPage: (req, res) => {
@@ -42,11 +44,46 @@ const userController = {
         res.redirect('/signin')
     },
     getUser: (req, res) => {
-        return User.findByPk(req.params.id)
+        return User.findByPk(req.params.id, { raw: true, nest: true})
         .then(user => {
             return res.render('users/profile', { profile: user })
         })
-    }
+    },
+    editUser: (req, res) => {
+        return User.findByPk(req.params.id, { raw: true, nest: true})
+        .then(user => {
+            return res.render('users/edit', { user: user })
+        })
+    },
+    putUser: (req, res) => {
+        if (Number(req.params.id) !== Number(req.user.id)) {
+            return res.redirect(`/users/${req.params.id}`)
+        }
+        const { file } = req
+        if (file) {
+            imgur.setClientID(IMGUR_CLIENT_ID)
+            imgur.upload(file.path, (err, img) => {
+                return User.findByPk(req.params.id)
+                .then((user) => {
+                    user.update({
+                        name: req.body.name,
+                        image: img.data.link
+                    })
+                    .then((user) => {
+                        res.redirect(`/users/${req.params.id}`)
+                    })
+                })
+            })
+        } else {
+            return User.findByPk(req.params.id)
+            .then((user) => {
+                user.update({ name:req.body.name })
+                .then((user) => {
+                    res.redirect(`/users/${req.params.id}`)
+                })
+            })
+        }
+    }   
 }
 
 module.exports = userController
