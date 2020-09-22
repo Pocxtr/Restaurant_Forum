@@ -18,18 +18,14 @@ const categoryController = {
         res.redirect('/admin/categories')
     },
     putCategory: (req, res) => {
-        if (!req.body.name) {
-            req.flash('error_msg', "Name did't Exist")
-            return res.redirect('back')
-        } else {
-            return Category.findByPk(req.params.id)
-            .then((category) => {
-                category.update(req.body)
-                .then((category) => {
-                    res.redirect('/admin/categories')
-                })
-            })
-        }
+        categoryService.putCategory(req, res, (data) => {
+            if (data['status'] === 'error') {
+                req.flash('error_msg', data['message'])
+                return res.redirect('back')
+            }
+            req.flash('success_msg', data['message'])
+            res.redirect('/admin/categories')
+        })
     },
     deleteCategory: (req, res) => {
         return Category.findByPk(req.params.id)
